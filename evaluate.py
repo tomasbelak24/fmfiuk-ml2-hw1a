@@ -66,6 +66,7 @@ def evaluate(checkpoint_path: str, data_path: str) -> None:
     print(f"Accuracy        : {accuracy:.4f}")
     print(f"AUC             : {auc:.4f}")
     print("=" * 50)
+    print(f"{len(dataset)};{accuracy:.4f};{auc:.4f}")
 
 
 if __name__ == "__main__":
