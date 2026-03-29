@@ -1,2 +1,4 @@
 eval_hard.json
 eval_hard.json.gz
+*.pyc
+__pycache__/
