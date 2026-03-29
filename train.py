@@ -27,11 +27,24 @@ class SequenceDataset(Dataset):
         return self.size
 
     def __getitem__(self, idx):
-        if idx % 2 == 0:
+        if idx % 3 == 0:
             seq = generate_regular_sequence(self.seq_length)
             label = 0
-        else:
+        elif idx % 3 == 1:
             seq = generate_irregular_sequence(self.seq_length)
+            label = 1
+        else:
+            if idx == 0:
+                print("Generating mixed sequence...")
+            len1 = int(self.seq_length * 0.3)
+            len2 = self.seq_length - len1
+
+            seq1 = generate_irregular_sequence(len1)
+            seq2 = generate_regular_sequence(len2)
+
+            parts = [seq1, seq2]
+            np.random.shuffle(parts)
+            seq = np.concatenate(parts).astype(np.int32)
             label = 1
 
         x = torch.tensor(seq, dtype=torch.float32)
@@ -110,4 +123,10 @@ def train(
 
 
 if __name__ == "__main__":
-    train()
+    train(
+        num_epochs=30,
+        batch_size=128,
+        lr=3e-4,
+        dataset_size=40000,
+        seq_length=1000,
+    )
