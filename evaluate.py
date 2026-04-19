@@ -55,6 +55,11 @@ def evaluate(checkpoint_path: str, data_path: str) -> None:
     preds = (all_probs_np >= 0.5).astype(int)
 
     accuracy = (preds == all_labels_np).mean()
+    irregular_rate = (preds == 1).mean()
+    confusion_matrix = np.zeros((2, 2), dtype=int)
+    for true, pred in zip(all_labels_np, preds):
+        confusion_matrix[true][pred] += 1
+    confusion_matrix = confusion_matrix.tolist() / confusion_matrix.sum()  # Convert to list for nicer printing
 
     try:
         auc = roc_auc_score(all_labels_np, all_probs_np)
@@ -65,6 +70,9 @@ def evaluate(checkpoint_path: str, data_path: str) -> None:
     print(f"Total sequences : {len(dataset)}")
     print(f"Accuracy        : {accuracy:.4f}")
     print(f"AUC             : {auc:.4f}")
+    print(f"Predicted irregular rate: {irregular_rate:.4f}")
+    print("Confusion Matrix:")
+    print(confusion_matrix)
     print("=" * 50)
     print(f"{len(dataset)};{accuracy:.4f};{auc:.4f}")
 
